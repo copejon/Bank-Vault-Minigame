@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html>
+<html  lang='en'>
+<meta charset="UTF-8">
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"  type="text/javascript"></script>
 <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:700" rel="stylesheet">
@@ -165,7 +166,27 @@
 		},5);
 	}
 
+	function configureParamInput(){
+		$('#hack-form').on("submit", function () {
+			var d = $('#hack-form :input[name="duration"]').val()
+			var s = $('#hack-form :input[name="size"]').val()
+			window.postMessage({
+				"start": 'true',
+				"show": 'true',
+				"d": d,
+				"s": s
+			})
+			return false
+		})
+	}
+
 	$(function(){
+		configureParamInput()
+
+		$h = $('#help')
+		$h.append("<div>Left Controls: W,A,S,D (Submit: SPACE)</div>")
+		$h.append("<div>Right Controls: ↑←↓→ (Submit: ⮐)</div>")
+		$h.append("<br>")
 		$( '#game' ).append( '<table id="gametable"></table>' );
 		$( '#gametable' ).append( '<tr id="row0"></tr>' );
 		for (var j = 0; j < 18; j++) {
@@ -259,7 +280,9 @@
 			var item = event.data;
 
 			if ('start' in item) {
+				console.log("starting game")
 				if('s' in item && 'd' in item) {
+					console.log("sol size= " + item['s'] + "; dur= " + item['d'] + "s")
 					setBigMsg('<span class="flash">Starting Hack...</span><br /><span class="small">Find the constant code blocks</span>');
 					playSound('audiostart',1);
 					$('.flash').fadeOut().fadeIn().fadeOut().fadeIn().fadeOut().fadeIn();
@@ -390,7 +413,8 @@
 </style>
 </head>
 <body>
-	<button id="start-button" type="button"></button> 
+	<h1>Simple Hack Game</h1>
+	<div id="help"></div>
 	<audio id="audiocorrect" src="snd/correct.ogg"></audio>
 	<audio id="audiowrong" src="snd/wrong.ogg"></audio>
 	<audio id="audiobeep" src="snd/beep.ogg"></audio>
@@ -399,6 +423,13 @@
 	<audio id="audiofinish" src="snd/finish.ogg"></audio>
 	<img id="phone" src="phone.png" />
 	<div id="bgfill"></div>
+	<form id="hack-form">
+		<label for="hack-sol-size">Solution Len:</label>
+		<input id="hack-sol-size" type="number" name="size" value="4"><br>
+		<label for="hack-sol-dur">Hack Duration:</label>
+		<input id="hack-sol-dur" type="number" name="duration" value="30"><br>
+		<input type="submit" id="hack-submit"><br>
+	</form>
 	<div id="phonewrapper">
 		<div id="game">
 			<div id="infobox"></div>
